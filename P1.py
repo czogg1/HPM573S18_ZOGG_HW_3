@@ -8,6 +8,7 @@ class Patient:
     def discharge(self):
         raise NotImplementedError("This is an abstract method and needs to be implemented in derived classes.")
 
+
 #establishing the patient types
 class EmergencyPatient(Patient):
     def __init__(self, name):
@@ -23,47 +24,65 @@ class HospitalizedPatient(Patient):
     def discharge(self):
         return [self.name, 'Hospitalized Patient']
 
-#defining hospital functions
+
+#defining hospital and its functions
 class Hospital:
-    def __init__(self, patients):
+    def __init__(self, patients, cost):
         self.patients = patients
+        self.cost = cost
 
-    def admit(self):
-        admit_total = 0
-        i=0
-        for patient in self.patients:
-            admit_total += 1
-            i += 1
-        return admit_total
+    def admit(self, people):
+        self.patients.append(people)                              #add individual patients and internally store them
+                                                                        #self. internally storing
+                                                                        #patients. list it is going into
+                                                                        #people what is being added
 
-    def discharge_all(self):
-        discharges = dict()
+    def get_total_cost(self):                                     #calculating total cost for the day
+        cost = self.cost
         for patient in self.patients:
-            discharges[patient.name] = patient.discharge()
-        return discharges
-
-    def get_total_cost(self):
-        cost = 0
-        i=0
-        for patient in self.patients:
-            if patient.discharge() == [patient.name, 'Emergency Patient']:
+            if type(patient) == EmergencyPatient:
                 cost += 1000
-            elif patient.discharge() == [patient.name, 'Hospitalized Patient']:
+            elif type(patient) == HospitalizedPatient:
                 cost += 2000
-            i += 1
         return cost
 
+    def discharge_all(self):
+        for patient in self.patients:
+            print(patient.discharge())                              #print list of patients discharged
 
-#######################
+        print('Total cost for the day =', self.get_total_cost())    #print total cost for the day
+
+        self.patients.clear()                                       #remove patients from admitted list
+
+
+
+#############
 #testing code
+
+#defining patients and hospital
 P1 = EmergencyPatient(name='Amy A.')
 P2 = EmergencyPatient(name='Bob B.')
 P3 = EmergencyPatient(name='Charlie C.')
 P4 = HospitalizedPatient(name='Denise D.')
 P5 = HospitalizedPatient(name='Ellory E.')
 
-Hospital = Hospital(patients=[P1, P2, P3, P4, P5])
+myHospital = Hospital(patients=[], cost=0)
 
-#running hospital functions
-print(Hospital.admit(), Hospital.discharge_all())
-print(Hospital.get_total_cost())
+#admitting patients
+myHospital.admit(P1)
+myHospital.admit(P2)
+myHospital.admit(P3)
+myHospital.admit(P4)
+myHospital.admit(P5)
+
+#print(myHospital.patients) #checking that admit worked
+
+
+#calling discharge function
+    #three results:
+    # 1. print discharge list
+    # 2. invoke get_total_cost function and print the result
+    # 3. remove patients from admitted patient list
+myHospital.discharge_all()
+
+#print(myHospital.patients) #checking that discharge worked
