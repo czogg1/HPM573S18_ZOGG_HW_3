@@ -15,45 +15,42 @@ class EmergencyPatient(Patient):
         Patient.__init__(self, name)
 
     def discharge(self):
-        return [self.name, 'Emergency Patient']
+        print(self.name, 'Emergency Patient')
 
 class HospitalizedPatient(Patient):
     def __init__(self, name):
         Patient.__init__(self, name)
 
     def discharge(self):
-        return [self.name, 'Hospitalized Patient']
+        print(self.name, 'Hospitalized Patient')
 
 
 #defining hospital and its functions
 class Hospital:
-    def __init__(self, patients, cost):
-        self.patients = patients
-        self.cost = cost
+    def __init__(self):
+        self.patients = []
+        self.cost = 0
 
     def admit(self, people):
         self.patients.append(people)                              #add individual patients and internally store them
-                                                                        #self. internally storing
-                                                                        #patients. list it is going into
-                                                                        #people what is being added
-
-    def get_total_cost(self):                                     #calculating total cost for the day
-        cost = self.cost
-        for patient in self.patients:
-            if type(patient) == EmergencyPatient:
-                cost += 1000
-            elif type(patient) == HospitalizedPatient:
-                cost += 2000
-        return cost
+                                                                        #self. - internally storing
+                                                                        #patients. - list it is going into
+                                                                        #people - what is being added
 
     def discharge_all(self):
         for patient in self.patients:
-            print(patient.discharge())                              #print list of patients discharged
+            patient.discharge()                                   #call list of patients discharged
 
-        print('Total cost for the day =', self.get_total_cost())    #print total cost for the day
+            if type(patient) == EmergencyPatient:                 #update cost on discharge
+                self.cost += 1000
+            elif type(patient) == HospitalizedPatient:
+                self.cost += 2000
 
-        self.patients.clear()                                       #remove patients from admitted list
+        self.patients.clear()                                     #remove patients from admitted list
 
+
+    def get_total_cost(self):                                     #return total cost for the day
+        return self.cost
 
 
 #############
@@ -66,7 +63,7 @@ P3 = EmergencyPatient(name='Charlie C.')
 P4 = HospitalizedPatient(name='Denise D.')
 P5 = HospitalizedPatient(name='Ellory E.')
 
-myHospital = Hospital(patients=[], cost=0)
+myHospital = Hospital()
 
 #admitting patients
 myHospital.admit(P1)
@@ -77,12 +74,13 @@ myHospital.admit(P5)
 
 #print(myHospital.patients) #checking that admit worked
 
-
-#calling discharge function
-    #three results:
+#calling discharge function:
     # 1. print discharge list
-    # 2. invoke get_total_cost function and print the result
+    # 2. update cost
     # 3. remove patients from admitted patient list
 myHospital.discharge_all()
 
 #print(myHospital.patients) #checking that discharge worked
+
+#getting total cost for the day
+print(myHospital.get_total_cost())
